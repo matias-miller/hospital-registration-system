@@ -3,9 +3,26 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>My Electron App</title>
+    <title>Hospital Registration System</title>
+    <link rel="stylesheet" href="styles/styles.css" />
   </head>
   <body>
-    <h1>Hello, Electron!</h1>
+    <nav id="navbar">
+      <div class="nav-row">
+        <button class="nav-btn" data-page="page1">Page 1</button>
+        <button class="nav-btn" data-page="page2">Page 2</button>
+        <button class="nav-btn" data-page="page3">Page 3</button>
+      </div>
+      <div class="nav-row">
+        <button id="homeBtn">Reset database</button>
+        <button id="settingsBtn">Fill database with test data</button>
+      </div>
+    </nav>
+
+    <div id="content">
+      <h1>HomePage</h1>
+    </div>
+
+    <script src="renderer.js"></script>
   </body>
 </html>
