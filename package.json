@@ -12,5 +12,9 @@
   "license": "ISC",
   "devDependencies": {
     "electron": "^24.0.0"
+  },
+  "dependencies": {
+    "electron-reload": "^2.0.0-alpha.1",
+    "mysql": "^2.18.1"
   }
 }

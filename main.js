@@ -1,6 +1,9 @@
 // main.js
 const { app, BrowserWindow, screen } = require('electron');
 
+// Enable live reload for all the files inside your project directory
+require('electron-reload')(__dirname);
+
 function createWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
   const x = Math.round((width - 800) / 2);
@@ -15,6 +18,7 @@ function createWindow() {
       nodeIntegration: true,
     },
   });
+  
 
   mainWindow.loadFile('index.html');
 
