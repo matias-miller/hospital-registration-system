@@ -4,13 +4,9 @@ const fs = require('fs');
 const url = require('url');
 
 function connectToDatabase() {
-  const connection = mysql.createConnection({
-    host: 'UNDCEMCS-SQL1.ad.und.edu',
-    port: 3306,
-    user: 'matias.miller',
-    password: 'beatpose175',
-    database: 'matiasmiller_db1'
-  });
+  const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
+
+  const connection = mysql.createConnection(config);
 
   return connection;
 }
@@ -59,3 +55,5 @@ const serverPort = 3000;
 server.listen(serverPort, () => {
   console.log(`Server listening at http://localhost:${serverPort}`);
 });
+
+module.exports = server;

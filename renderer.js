@@ -1,4 +1,28 @@
+const server = require('server.js');
+
 // renderer.js
+async function printAllData(contentDiv) {
+  const tables = [
+    'patient', 'doctor', 'clinic', 'appointment', 'appointment_summary',
+    'pharmacy', 'outstanding_balance', 'prescription', 'patient_primary_doctor'
+  ];
+
+  contentDiv.innerHTML = '<h1>All Data</h1>';
+
+  for (const table of tables) {
+    const query = `SELECT * FROM ${table};`;
+    const response = await fetch(`http://localhost:3000/executeSqlQuery?sql=${encodeURIComponent(query)}`);
+    const data = await response.json();
+
+    if (data.error) {
+      console.error('Error executing query:', data.error);
+    } else {
+      contentDiv.innerHTML += `<h2>${table}</h2>`;
+      contentDiv.innerHTML += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+    }
+  }
+}
+
 async function executeSqlQuery(query) {
   try {
     const response = await fetch(`http://localhost:3000/executeSqlQuery?sql=${encodeURIComponent(query)}`);
@@ -110,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else if (page == `page3`) {
           await checkDatabaseForErrors();
           contentDiv.innerHTML = `<h1>${page}</h1><p>Welcome to ${page}!</p>`;
-          contentDiv.innerHTML += `
+          contentDiv.innerHTML = `
               <form id="post-appointment-form">
               <h2>Post-Appointment Form</h2>
               </br>
@@ -131,6 +155,9 @@ document.addEventListener('DOMContentLoaded', () => {
               </br>
               <button type="submit">Submit</button>
             </form>`;
+      } else if (page == `page4`) {
+          contentDiv.innerHTML = "yee";
+          await printAllData(contentDiv);
       }
     });
   });
@@ -188,21 +215,19 @@ document.addEventListener('DOMContentLoaded', () => {
     executeSqlQuery('DELETE FROM patient_primary_doctor;')
     executeSqlQuery('DELETE FROM pharmacy;')
     executeSqlQuery('DELETE FROM prescription;')
-    contentDiv.innerHTML += '<h1>Database Reset.</h1>';
+    alert('Database reset.')
   });
 
   const settingsBtn = document.getElementById('settingsBtn');
   settingsBtn.addEventListener('click', async () => {
-    try {
-      const sql = fs.readFileSync('data.sql', 'utf-8');
-      const queries = sql.split(';').filter(query => query.trim() !== '');
-      for (const query of queries) {
-        await executeSqlQuery(query);
-      }
-      contentDiv.innerHTML += '<h1>Database imported.</h1>';
-    } catch (err) {
-      console.error(err);
-      contentDiv.innerHTML += '<h1>Error importing database.</h1>';
+    contentDiv.innerHTML = '<h1>Settings</h1>';
+    
+    const queries = [  "INSERT INTO `patient` (first_name, last_name, date_of_birth, gender, phone_number, address) VALUES ('John', 'Doe', '1985-03-20', 'M', '555-123-4567', '123 Main St, New York, NY 10001'), ('Jane', 'Smith', '1990-07-15', 'F', '555-987-6543', '456 Oak St, Los Angeles, CA 90001')",  "INSERT INTO `doctor` (name, phone_number, specialty) VALUES ('Dr. Brown', '555-111-2222', 'Cardiology'), ('Dr. Green', '555-333-4444', 'Dermatology')",  "INSERT INTO `clinic` (name, address, phone_number) VALUES ('City Clinic', '789 Park Ave, New York, NY 10001', '555-555-1111'), ('Westside Clinic', '321 Sunset Blvd, Los Angeles, CA 90001', '555-555-2222')",  "INSERT INTO `appointment` (date, time, clinic_id, reason, doc_id, patient_id, patient_checked_in, pre_appointment_form, appointment_cost) VALUES ('2023-04-20', '10:00:00', 1, 'Checkup', 1, 1, 0, 'Patient has a history of high blood pressure.', 100), ('2023-04-21', '14:00:00', 2, 'Skin rash', 2, 2, 0, 'Patient developed a rash on their arm.', 80)",  "INSERT INTO `appointment_summary` (pres_treatment, notes, alt_treatment, appt_id, patient_id) VALUES ('Prescribed blood pressure medication.', 'Patient needs to monitor blood pressure.', 'Regular exercise and low sodium diet.', 1, 1), ('Prescribed ointment.', 'Rash should clear up within a week.', 'Over-the-counter hydrocortisone cream.', 2, 2)",  "INSERT INTO `pharmacy` (name, phone_number, address) VALUES ('Main St Pharmacy', '555-666-7777', '150 Main St, New York, NY 10001'), ('Sunset Pharmacy', '555-888-9999', '420 Sunset Blvd, Los Angeles, CA 90001')",  "INSERT INTO `outstanding_balance` (patient_id, outstanding_balance) VALUES (1, 100.00), (2, 80.00)",  "INSERT INTO `prescription` (quantity, drug, expiration_date, patient_id) VALUES (30, 'Lisinopril', '2023-05-20', 1), (15, 'Hydrocortisone', '2023-05-21', 2)",  "INSERT INTO `patient_primary_doctor` (doc_id, patient_id) VALUES (1, 1), (2, 2)"];
+    
+    for (const query of queries) {
+      await executeSqlQuery(query);
     }
+
+    alert('Database test data imported.');
   });
 });
