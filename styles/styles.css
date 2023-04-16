@@ -26,3 +26,7 @@ body {
 .nav-btn:hover {
   background-color: #e0e0e0;
 }
+
+.content {
+  padding: 1.2em;
+}
